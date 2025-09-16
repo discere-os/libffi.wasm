@@ -1,0 +1,83 @@
+{
+  "name": "@discere-os/libffi.wasm",
+  "version": "3.5.2",
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
+  "description": "Foreign Function Interface for WebAssembly with WASM32/WASM64 support and TypeScript integration",
+  "main": "dist/node/index.js",
+  "module": "dist/browser/index.js",
+  "types": "dist/lib/types.d.ts",
+  "exports": {
+    ".": {
+      "browser": "./dist/browser/index.js",
+      "node": "./dist/node/index.js",
+      "types": "./dist/lib/types.d.ts"
+    },
+    "./wasm": {
+      "import": "./dist/wasm/libffi.js",
+      "types": "./dist/wasm/types.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc && npm run build:wasm",
+    "build:wasm": "./build-wasm.sh",
+    "build:docs": "mandoc -T markdown man/*.3",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "test:ui": "vitest --ui",
+    "test:browser": "playwright test",
+    "type-check": "tsc --noEmit",
+    "demo": "node dist/demo.js",
+    "benchmark": "node dist/benchmark.js",
+    "clean": "rm -rf dist build node_modules/.vite target",
+    "prepublishOnly": "npm run build && npm run test"
+  },
+  "keywords": [
+    "libffi",
+    "ffi",
+    "foreign-function-interface",
+    "wasm",
+    "wasm32", 
+    "wasm64",
+    "webassembly",
+    "dynamic-calls",
+    "closures",
+    "emscripten",
+    "typescript"
+  ],
+  "author": "Superstruct Ltd, New Zealand",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.0.0",
+    "@vitest/ui": "^3.0.0",
+    "@playwright/test": "^1.40.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "files": [
+    "dist/",
+    "src/wasm/",
+    "include/",
+    "man/",
+    "build-wasm.sh",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/discere-os/libffi.wasm.git"
+  },
+  "homepage": "https://github.com/discere-os/libffi.wasm",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "cdn": {
+    "primary": "https://cdn.discere.cloud/npm/@discere-os/libffi.wasm/",
+    "fallbacks": [
+      "https://cdn.jsdelivr.net/npm/@discere-os/libffi.wasm/",
+      "https://unpkg.com/@discere-os/libffi.wasm/"
+    ]
+  }
+}

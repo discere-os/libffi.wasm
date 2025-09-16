@@ -1,46 +1,86 @@
-.libs
-.deps
-*.o
-*.lo
-*.wasm
-*.js
-*.test
-*.log
-.dirstamp
-*.la
-Makefile
-!testsuite/libffi.bhaible/Makefile
-Makefile.in
-aclocal.m4
-compile
-!.ci/compile
-configure
-depcomp
-doc/libffi.info
-*~
-fficonfig.h.in
-fficonfig.h
-include/ffi.h
-include/ffitarget.h
-install-sh
-libffi.pc
-libtool
-ltmain.sh
-m4/libtool.m4
-m4/lt*.m4
-mdate-sh
-missing
-stamp-h1
-libffi*gz
-autom4te.cache
-libffi.xcodeproj/xcuserdata
-libffi.xcodeproj/project.xcworkspace
-build_*/
-darwin_*/
-src/arm/trampoline.S
-**/texinfo.tex
+# libffi.wasm v3.5.2 - Enhanced WASM-native build
+# Based on official libffi with modern TypeScript integration
+
+# Build outputs
+build/
 target/
-__pycache__
-.docker_home
-emsdk
-test-results
+dist/
+.libs/
+.deps/
+
+# WASM artifacts  
+*.wasm
+*.wat
+*.bc
+*.ll
+
+# Emscripten build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.lo
+*.la
+.dirstamp
+
+# Autotools artifacts (keep for official libffi compatibility)
+Makefile
+Makefile.in
+config.h
+config.log
+config.status
+stamp-*
+autom4te.cache/
+
+# TypeScript compilation
+*.js
+*.js.map
+*.d.ts
+*.d.ts.map
+
+# Node.js dependencies
+node_modules/
+.pnpm-debug.log*
+.pnpm-store/
+
+# Testing and coverage
+coverage/
+.nyc_output
+.vitest/
+test-results/
+playwright-report/
+
+# Development
+.env
+.env.local
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# DejaGNU test outputs
+testsuite/*.log
+testsuite/*.sum
+testsuite/**/test.js
+testsuite/**/test.html
+testsuite/**/*.o
+
+# CDN cache
+emsdk-cache/
+__pycache__/
+
+# Keep essential files
+!src/**/*
+!tests/**/*
+!include/**/*
+!man/**/*
+!package.json
+!tsconfig.json
+!vitest.config.ts
+!build-wasm.sh
+!README.md
+!LICENSE
+!configure.ac
+!Makefile.am
