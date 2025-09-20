@@ -9,6 +9,8 @@
 
 #include <ffi.h>
 #include <emscripten/emscripten.h>
+#include <string.h>
+#include <stddef.h>
 
 #ifdef __wasm_simd128__
 #include <wasm_simd128.h>

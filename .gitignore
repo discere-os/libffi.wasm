@@ -1,6 +1,8 @@
 # libffi.wasm v3.5.2 - Enhanced WASM-native build
 # Based on official libffi with modern TypeScript integration
 
+/install/ 
+
 # Build outputs
 build/
 target/

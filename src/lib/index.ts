@@ -13,7 +13,7 @@ import {
   FFITypeError,
   FFIABIError,
   FFIVersionError
-} from './types.js'
+} from './types.ts'
 import type {
   LibFFIModule,
   FFITypeDescriptor,
@@ -25,7 +25,7 @@ import type {
   CallOptions,
   SystemCapabilities,
   LoadingOptions
-} from './types.js'
+} from './types.ts'
 
 export default class LibFFI {
   private module: LibFFIModule | null = null
@@ -35,10 +35,10 @@ export default class LibFFI {
 
   constructor(options: LoadingOptions = {}) {
     this.loadingOptions = {
-      cdnUrl: 'https://cdn.discere.cloud/npm/@discere-os/libffi.wasm/',
+      cdnUrl: 'https://wasm.discere.cloud/libffi@latest/',
       fallbackUrls: [
-        'https://cdn.jsdelivr.net/npm/@discere-os/libffi.wasm/',
-        'https://unpkg.com/@discere-os/libffi.wasm/'
+        'https://cdn.jsdelivr.net/npm/@discere-os/libffi.wasm@latest/',
+        'https://unpkg.com/@discere-os/libffi.wasm@latest/'
       ],
       preloadModules: true,
       cachingEnabled: true,
@@ -61,9 +61,8 @@ export default class LibFFI {
       this.wasm64Mode = this.detectWasm64Support()
       
       // Initialize with appropriate ABI
-      this.module = await moduleFactory({
-        wasmBinary: this.loadingOptions.preloadModules ? undefined : await this.loadWasmBinary()
-      })
+      const wasmBinary = await this.loadWasmBinary()
+      this.module = await moduleFactory(wasmBinary ? { wasmBinary } : {})
       
       this.initialized = true
     } catch (error) {
@@ -339,28 +338,44 @@ export default class LibFFI {
 
   // Private implementation methods
   private async loadModuleFactory(): Promise<Function> {
-    // Try CDN loading first, then fallbacks
+    // Deno-first development environment
+    if (typeof globalThis.Deno !== 'undefined') {
+      // Use local build for development/testing
+      const moduleFactory = (await import('../../install/wasm/libffi-main.js')).default
+      return moduleFactory
+    }
+
+    // Web/CDN runtime - try CDN locations with proper ES6 imports
     for (const url of [this.loadingOptions.cdnUrl, ...this.loadingOptions.fallbackUrls!]) {
       try {
-        const response = await fetch(`${url}/libffi.js`)
-        if (response.ok) {
-          const moduleCode = await response.text()
-          return new Function('return ' + moduleCode)()
-        }
+        // Import the ES6 module directly (no eval)
+        const moduleFactory = (await import(`${url}libffi-main.js`)).default
+        return moduleFactory
       } catch {
         continue
       }
     }
-    
-    // Fallback to local build
-    const moduleFactory = (await import('../../target/libffi.js')).default
-    return moduleFactory
+
+    throw new Error('Failed to load libffi module factory from any source')
   }
 
-  private async loadWasmBinary(): Promise<ArrayBuffer> {
+  private async loadWasmBinary(): Promise<ArrayBuffer | undefined> {
+    // Deno-first development environment
+    if (typeof globalThis.Deno !== 'undefined') {
+      try {
+        const wasmPath = new URL('../../install/wasm/libffi-main.wasm', import.meta.url).pathname
+        const wasmBuffer = await Deno.readFile(wasmPath)
+        return wasmBuffer.buffer
+      } catch (error) {
+        console.warn('Failed to load local WASM binary:', error)
+        return undefined
+      }
+    }
+
+    // Web/CDN runtime - try CDN locations
     for (const url of [this.loadingOptions.cdnUrl, ...this.loadingOptions.fallbackUrls!]) {
       try {
-        const response = await fetch(`${url}/libffi.wasm`)
+        const response = await fetch(`${url}libffi-main.wasm`)
         if (response.ok) {
           return await response.arrayBuffer()
         }
@@ -368,10 +383,9 @@ export default class LibFFI {
         continue
       }
     }
-    
-    // Fallback to local build
-    const response = await fetch('../../target/libffi.wasm')
-    return await response.arrayBuffer()
+
+    // Fallback to undefined for embedded WASM
+    return undefined
   }
 
   private detectWasm64Support(): boolean {
@@ -513,4 +527,4 @@ export default class LibFFI {
 }
 
 // Re-export types for convenience
-export * from './types.js'
+export * from './types.ts'

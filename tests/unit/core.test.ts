@@ -4,8 +4,8 @@
  */
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest'
-import LibFFI, { FFIType, FFIABI, FFIStatus, FFIVersionError } from '../../src/lib/index.js'
-import type { FFITypeDescriptor, ComplexNumber, FFIRaw } from '../../src/lib/types.js'
+import LibFFI, { FFIType, FFIABI, FFIStatus, FFIVersionError } from '../../src/lib/index.ts'
+import type { FFITypeDescriptor, ComplexNumber, FFIRaw } from '../../src/lib/types.ts'
 
 describe('libffi.wasm v3.5.2 Core Functionality', () => {
   let libffi: LibFFI
