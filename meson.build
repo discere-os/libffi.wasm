@@ -26,3 +26,20 @@ shared_module('libffi-side',
   install_dir: get_option('libdir')
 )
 
+# Static library for linking by dependent libraries
+libffi = static_library('ffi',
+  files('wasm/libffi_wasm_module.c'),
+  c_args: cargs,
+  install: true,
+  install_dir: get_option('libdir')
+)
+
+# Generate and install pkg-config file for glib dependency
+pkg = import('pkgconfig')
+pkg.generate(
+  name: 'libffi',
+  description: 'Foreign Function Interface library',
+  version: meson.project_version(),
+  libraries: '-lffi'
+)
+
