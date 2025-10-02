@@ -9,6 +9,7 @@ target/
 dist/
 .libs/
 .deps/
+wasm32-unknown-emscripten/
 
 # WASM artifacts  
 *.wasm
