@@ -1,12 +1,12 @@
 /**
- * ${LIB_TITLE} WASM Benchmarks
+ * Libffi WASM Benchmarks
  */
 
-import ${LIB_TITLE}WASM from "../src/lib/index.ts"
+import LibffiWASM from "../src/lib/index.ts"
 
-Deno.bench("${LIB_NAME} initialization", {
+Deno.bench("libffi initialization", {
   baseline: true
 }, async () => {
-  const lib = new ${LIB_TITLE}WASM()
+  const lib = new LibffiWASM()
   await lib.initialize()
 })
